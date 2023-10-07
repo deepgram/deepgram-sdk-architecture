@@ -57,21 +57,13 @@ This is the main client. It will expose the product clients as properties on the
 ## Node SDK example
 
 ```ts
-import { applySettingDefaults, stripTrailingSlash } from "./lib/helpers";
-import { DEFAULT_URL, DEFAULT_OPTIONS } from "./lib/constants";
+// ... other utility imports ...
 import { ListenClient } from "./packages/ListenClient";
 import { ManageClient } from "./packages/ManageClient";
 import { OnPremClient } from "./packages/OnPremClient";
 
 export default class DeepgramClient {
-  protected key: string;
-  protected baseUrl: URL;
-  protected headers: Record<string, string>;
-
-  constructor(
-    protected apiKey: string,
-    options: DeepgramClientOptions | undefined = DEFAULT_OPTIONS
-  ) {
+  constructor(apiKey, options) {
     this.key = apiKey;
 
     if (!apiKey) {
@@ -82,9 +74,10 @@ export default class DeepgramClient {
       if (!apiKey) throw new Error("A deepgram API key is required");
     }
 
-    const settings = applySettingDefaults(options, DEFAULT_OPTIONS);
+    const settings = applySettingDefaults(options, DEFAULT_OPTIONS); // apply default settings over options
 
     if (!settings.global.url) {
+      // as we default the URL when not supplies, a user MUST be trying to break stuff by here
       throw new Error(
         `An API URL is required. It should be set to ${DEFAULT_URL} by default. No idea what happened!`
       );
@@ -93,21 +86,24 @@ export default class DeepgramClient {
     let url = settings.global.url;
 
     if (!/^https?:\/\//i.test(url)) {
-      url = "https://" + url;
+      url = "https://" + url; // allows us to accept either `api.deegram.com` or `https://api.deepgram.com`
     }
 
-    this.baseUrl = new URL(stripTrailingSlash(url));
+    this.baseUrl = new URL(stripTrailingSlash(url));  // allows us to accept either `https://api.deepgram.com` or `https://api.deepgram.com/`
     this.headers = settings.global?.headers ?? {};
   }
 
+  // deepgram.listen
   get listen(): ListenClient {
     return new ListenClient(this.baseUrl, this.headers, this.key);
   }
 
+  // deepgram.manage
   get manage(): ManageClient {
     return new ManageClient(this.baseUrl, this.headers, this.key);
   }
 
+  // deepgram.onprem
   get onprem(): OnPremClient {
     return new OnPremClient(this.baseUrl, this.headers, this.key);
   }
