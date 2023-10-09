@@ -1,6 +1,6 @@
 # Entrypoint
 
-This is the top-most file in a project. Sometimes known as `index.js`, `index.ts`, `main.py`.
+This is the top-most file in a project. Sometimes known as `index.js`, `index.ts`, `__init__.py`.
 
 ## Imported files
 
