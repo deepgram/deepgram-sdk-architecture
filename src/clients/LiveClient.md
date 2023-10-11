@@ -1,6 +1,6 @@
-# PrerecordedClient
+# LiveClient
 
-This is the prerecorded client. It's purpose is to allow users to run a synchronous or asynchronous transcription.
+This is the live client. It's purpose is to connect to the Deepgram websocket, store the connection as a private property, enable sending events, and to emit events based
 
 ## Imported by
 
@@ -8,79 +8,41 @@ This is the prerecorded client. It's purpose is to allow users to run a synchron
 
 ## Imported files
 
-- [AbstractRestfulClient](./AbstractRestfulClient.md)
+- generic built-in event emitter?
 
 ## Descriptive language
 
-- class `PrerecordedClient` extends `AbstractRestfulClient`
+- class `LiveClient` extends or implements a built-in event emitter class
 
-  - `constructor` (see `AbstractRestfulClient`)
+  - `constructor` - accepts `baseUrl` string or URL object, `key` string, and live transcription options
 
-  - `transcribeUrl` class function - accepts a `urlSource`, and prerecorded transcription options
+    - immediately connects to Deepgram websocket
 
-    - if `source` is not a valid URL source
+    - store socket against cass
 
-      - raise exception (wrong source)
+    - set up listeners for deepgram websocket events
 
-    - if callback is in options
+      - `open` - emit `op` event
 
-      - raise exception (point them at the callback functions)
+      - `close` - emit `close` event
 
-    - apply options as querystring params to the URL
+      - `error` - emit `error` event with details
 
-    - set content-type header as JSON - for the request body
+      - `message` can be JSON with property `type=Results` - emit a transcription event with parsed JSON (not string)
 
-    - return transcription results
+      - `message` can be JSON with property `type=Metadata` - emit a metadata event with parsed JSON (not string)
 
-  - `transcribeFile` class function - accepts a `bufferSource` (or, optionally a file stream/`streamSource`), and prerecorded transcription options
+  - `configure` - update
 
-    - if `source` is not a valid FILE source
+  - `keepAlive`
 
-      - raise exception (wrong source)
+  - `getReadyState`
 
-    - if callback is in options
+  - `send`
 
-      - raise exception (point them at the callback functions)
+  - `finish`
 
-    - apply options as querystring params to the URL
-
-    - set content-type header as JSON - for the request body
-
-    - return transcription results
-
-  - `transcribeUrlCallback` class function - accepts a `urlSource`, a `callback`, and prerecorded transcription options
-
-    - if `source` is not a valid URL source
-
-      - raise exception (wrong source)
-
-    - if callback is in options
-
-      - set `callback=<value>` in the prerecorded transcription options object
-
-    - apply options as querystring params to the URL
-
-    - set content-type header as JSON - for the request body
-
-    - return async confirmation with `request_id` only
-
-  - `transcribeFileCallback` class function - accepts a `urlSource`, a `callback`, and prerecorded transcription options
-
-    - if `source` is not a valid FILE source
-
-      - raise exception (wrong source)
-
-    - if callback is in options
-
-      - set `callback=<value>` in the prerecorded transcription options object
-
-    - apply options as querystring params to the URL
-
-    - set content-type header as JSON - for the request body
-
-    - return async confirmation with `request_id` only
-
-- export `PrerecordedClient`
+- export `LiveClient`
 
 ## Node SDK example
 
@@ -88,7 +50,7 @@ This is the prerecorded client. It's purpose is to allow users to run a synchron
 // ... other utility imports ...
 import { AbstractRestfulClient } from "./AbstractRestfulClient";
 
-export class PrerecordedClient extends AbstractRestfulClient {
+export class LiveClient extends AbstractRestfulClient {
 
   // deepgram.listen.prerecorded.transcribeUrl(source, { ...opts })
   async transcribeUrl(source, options, endpoint = "v1/listen") {

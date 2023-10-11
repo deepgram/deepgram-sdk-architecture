@@ -8,7 +8,7 @@ This is the listen client. It's purpose is to expose the different types of `lis
 
 ## Imported files
 
-- [PrerecordedClient}](./PrerecordedClient.md)
+- [PrerecordedClient](./PrerecordedClient.md)
 - [LiveClient](./LiveClient.md)
 
 ## Descriptive language
