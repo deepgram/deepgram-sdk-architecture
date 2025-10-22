@@ -30,8 +30,8 @@ typed clients, request/response models, errors, and streaming schemas.
    - Generated artifacts include: base/async base clients, service groups, request/response models, shared enums,
      error types, and default HTTP/WebSocket clients.
 4. **Apply Post-Processing Hooks**  
-   - Automated scripts add Deepgram headers (for example, `X-Fern-SDK-Version`) and adjust packaging metadata.  
-   - Linters/formatters run to align with language conventions.
+   - Fern configuration injects required Deepgram headers (for example, `X-Fern-SDK-Version`) during generation.  
+   - Language toolchains run linters/formatters to align with community conventions.
 5. **Integrate Hand-Written Extensions**  
    - Language maintainers implement entrypoints like `DeepgramClient` that extend the generated base classes.  
    - Telemetry, authentication adapters, and custom transports wrap generated primitives without modifying them.
