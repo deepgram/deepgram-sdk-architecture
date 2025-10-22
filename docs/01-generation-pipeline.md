@@ -5,7 +5,11 @@ language packages in sync with the platform and enforces consistent defaults.
 
 ## Source of Truth
 
-- **OpenAPI + AsyncAPI specs** live in [`deepgram-api-specs`](https://github.com/deepgram/deepgram-api-specs).
+- **Composite specs** are maintained in the private `deepgram/internal-api-specs` repository. Multiple definition
+  fragments (service domains, shared schemas) are merged there into a release-ready bundle.
+- **Public distribution** occurs when the internal bundle is hoisted into a `dist/` artifact and published to
+  [`deepgram-api-specs`](https://github.com/deepgram/deepgram-api-specs). SDK teams consume the published bundle so the
+  public repo remains the canonical reference for versioned releases.
 - **Fern configuration** (targets, generators, naming rules, error mappings) resides alongside each SDK implementation.
   The Python SDK uses `fern/config.yml` as a reference for other languages.
 
@@ -15,8 +19,8 @@ typed clients, request/response models, errors, and streaming schemas.
 ## End-to-End Flow
 
 1. **Update Specs**  
-   - Modify `openapi.yml` or `asyncapi.yml` in `deepgram-api-specs`.  
-   - Run linting and contract tests before publishing changes.
+   - Modify composite fragments in `deepgram/internal-api-specs`, then regenerate the bundled `dist/` artifact.  
+   - Promote the bundle to `deepgram-api-specs` and run linting/contract tests before publishing changes.
 2. **Sync Specification Version**  
    - Bump the Fern generator dependency in language repositories if the schema release changed.  
    - Ensure SDK feature flags or beta endpoints are toggled through config (not by editing generated files).
